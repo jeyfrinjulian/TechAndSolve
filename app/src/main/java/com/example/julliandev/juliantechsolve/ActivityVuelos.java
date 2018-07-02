@@ -206,15 +206,12 @@ public class ActivityVuelos extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ModelDataBase db = new ModelDataBase(getApplicationContext());
-                int existevuelo = db.existRegistroVuelo(String.valueOf(idvuelo), ddlhorarios.getSelectedItem().toString());
-
-                if(existevuelo==0){
+                String edaduser = txtedad.getText().toString();
+                String cedulauser = txtcedula.getText().toString();
+                //int existevuelo = db.existRegistroVuelo(String.valueOf(idvuelo), ddlhorarios.getSelectedItem().toString());
+                boolean existediavuelo = existeDiaVuelo(String.valueOf(idvuelo), ddlhorarios.getSelectedItem().toString(),cedulauser);
+                if(existediavuelo){
                     final Dictionary<String, String> datoscedula = new Hashtable<String, String>();
-
-                    String edaduser = txtedad.getText().toString();
-                    String cedulauser = txtcedula.getText().toString();
-
-
                     if(!cedulauser.equals("") && !edaduser.equals("")){
                         datoscedula.put("CEDULA",cedulauser);
                         datoscedula.put("VUELO",vuelo_elegido);
@@ -233,7 +230,7 @@ public class ActivityVuelos extends AppCompatActivity {
                         Toast.makeText(view.getContext(),"Por favor completar los campos",Toast.LENGTH_LONG).show();
                     }
                 }else{
-                    Toast.makeText(view.getContext(),"Ya tienes registrado este vuelo",Toast.LENGTH_LONG).show();
+                    Toast.makeText(view.getContext(),"Ya tienes vuelo para esta fecha",Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -248,15 +245,17 @@ public class ActivityVuelos extends AppCompatActivity {
         dialog.show();
     }
 
+    private boolean existeDiaVuelo(String idvuelo, String horario, String cnsusuario) {
+        ModelDataBase db = new ModelDataBase(this);
+        Toast.makeText(this,cnsusuario,Toast.LENGTH_LONG).show();
+        boolean res = db.existRegistroVuelo(idvuelo, horario, cnsusuario) == 0 ? true : false;
+        return res;
+    }
+
     public long resgistrarVueloCedula(Dictionary<String, String> datos){
         ModelDataBase db = new ModelDataBase(this);
-        if(db.validarRegistroFecha(datos.get("HORA"))==0){
-            long res = db.registrarVueloCedula(datos);
-            return res;
-        }else {
-            Toast.makeText(this, "Ya tienes agendado un vuelo para esta fecha",Toast.LENGTH_LONG).show();
-        }
-        return -1;
+        long res = db.registrarVueloCedula(datos);
+        return res;
     }
 
     public List<Dictionary<String, String>> getVuelosRegistrados(String userid){

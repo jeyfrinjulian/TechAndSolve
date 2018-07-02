@@ -87,9 +87,9 @@ public class ModelDataBase extends SQLiteOpenHelper {
         return true;
     }
 
-    public int existRegistroVuelo(String idvuelo, String hora){
+    public int existRegistroVuelo(String idvuelo, String hora, String cnsuuario){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM VUELOSREGISTRADOS WHERE CNSVUELO='"+idvuelo+"' AND HORA='"+hora+"'", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM VUELOSREGISTRADOS WHERE CNSUSUARIO='"+cnsuuario+"' AND HORA LIKE '%"+hora+"%'", null);
         return cursor.getCount();
     }
 
